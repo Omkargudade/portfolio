@@ -114,13 +114,24 @@ const Hero = () => {
                         </span>
                     </motion.h1>
 
-                    <motion.p
-                        className="lead mb-4 mb-md-5 text-light opacity-90"
-                        style={{ fontSize: "clamp(1.1rem, 3.5vw, 1.6rem)" }}
-                        variants={letterVariants}
-                    >
-                        A passionate <span className="fw-bold text-info">Web Developer & Designer</span>
-                    </motion.p>
+                    <motion.div variants={letterVariants} className="mb-4 mb-md-5">
+                        <div
+                            className="lead fw-bold text-info mb-2"
+                            style={{ fontSize: "clamp(1.2rem, 3.8vw, 1.85rem)", letterSpacing: "0.01em" }}
+                        >
+                            Full Stack Developer &amp; Problem Solver
+                        </div>
+                        <div
+                            className="text-light opacity-90 mx-auto px-2"
+                            style={{
+                                fontSize: "clamp(0.95rem, 2.5vw, 1.2rem)",
+                                maxWidth: "720px",
+                                lineHeight: "1.6"
+                            }}
+                        >
+                            Specializing in <span className="text-white fw-semibold">Java, Spring Boot, React, Node.js &amp; Distributed APIs</span>
+                        </div>
+                    </motion.div>
 
                     <motion.div variants={letterVariants}>
                         <Button
