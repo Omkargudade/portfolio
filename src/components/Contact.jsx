@@ -1,179 +1,207 @@
-import React, { useRef, useState } from 'react';
-// import emailjs from 'emailjs-com';
+import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
-import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaLanguage, FaLinkedin, FaGithub, FaTwitter, FaFacebook } from 'react-icons/fa';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaGithub, FaLinkedin, FaTwitter, FaEnvelope, FaCheck } from 'react-icons/fa';
+import { SiLeetcode } from 'react-icons/si';
 
 const Contact = () => {
-    const formRef = useRef();
-    const [isSent, setIsSent] = useState(false);
+    const [formStatus, setFormStatus] = useState('idle'); // idle, submitting, success
 
-    const sendEmail = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        // Simulate sending for now
-        setIsSent(true);
-        setTimeout(() => setIsSent(false), 3000);
-        formRef.current.reset();
+        setFormStatus('submitting');
+        // Simulate API call
+        setTimeout(() => {
+            setFormStatus('success');
+            setTimeout(() => setFormStatus('idle'), 3000);
+        }, 1500);
     };
+
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                type: "spring",
+                stiffness: 100,
+                damping: 10
+            }
+        }
+    };
+
+    const socialLinks = [
+        { icon: FaGithub, href: "https://github.com/Omkargudade", color: "#333", title: "GitHub" },
+        { icon: SiLeetcode, href: "https://leetcode.com", color: "#ffa116", title: "LeetCode" },
+        { icon: FaLinkedin, href: "https://linkedin.com", color: "#0077b5", title: "LinkedIn" },
+        { icon: FaTwitter, href: "https://twitter.com", color: "#1da1f2", title: "Twitter" },
+        { icon: FaEnvelope, href: "mailto:email@example.com", color: "#ea4335", title: "Email" }
+    ];
 
     return (
         <section
             id="contact"
-            className="py-5"
+            className="py-5 position-relative"
             style={{
                 background: "transparent"
             }}
         >
             <Container>
                 <motion.h2
-                    className="text-center fw-bold mb-3"
-                    initial={{ opacity: 0, y: -20 }}
+                    className="text-center fw-bold mb-5"
+                    initial={{ opacity: 0, y: -30 }}
                     whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
                     viewport={{ once: true }}
                 >
                     Get In Touch
                 </motion.h2>
-                <motion.p
-                    className="text-center mb-5"
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                    viewport={{ once: true }}
-                >
-                    I'm always interested in new opportunities and exciting projects.
-                    Let’s connect and discuss how we can work together!
-                </motion.p>
 
-                <Row>
-                    {/* Left Contact Info */}
-                    <Col md={6} className="mb-4">
+                <Row className="justify-content-center">
+                    <Col md={8}>
                         <motion.div
-                            initial={{ opacity: 0, x: -50 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.5 }}
+                            variants={containerVariants}
+                            initial="hidden"
+                            whileInView="visible"
                             viewport={{ once: true }}
                         >
-                            <h4 className="mb-4">Contact Information</h4>
+                            <Card className="p-3 p-sm-4 glass border-0 shadow-lg" style={{ borderRadius: "16px" }}>
+                                <Card.Body className="p-2 p-sm-3">
+                                    <Form onSubmit={handleSubmit}>
+                                        <Row>
+                                            <Col md={6}>
+                                                <motion.div variants={itemVariants} className="mb-3">
+                                                    <Form.Group controlId="formName">
+                                                        <Form.Label className="fw-medium">Name</Form.Label>
+                                                        <Form.Control
+                                                            type="text"
+                                                            placeholder="Enter your name"
+                                                            className="glass-input border-0"
+                                                            style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}
+                                                            required
+                                                        />
+                                                    </Form.Group>
+                                                </motion.div>
+                                            </Col>
+                                            <Col md={6}>
+                                                <motion.div variants={itemVariants} className="mb-3">
+                                                    <Form.Group controlId="formEmail">
+                                                        <Form.Label className="fw-medium">Email</Form.Label>
+                                                        <Form.Control
+                                                            type="email"
+                                                            placeholder="Enter your email"
+                                                            className="glass-input border-0"
+                                                            style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}
+                                                            required
+                                                        />
+                                                    </Form.Group>
+                                                </motion.div>
+                                            </Col>
+                                        </Row>
 
-                            {[
-                                { icon: FaEnvelope, text: "Omkargudade@gmail.com" },
-                                { icon: FaPhone, text: "+91 6363779125" },
-                                { icon: FaMapMarkerAlt, text: "Karnataka, India" },
-                                { icon: FaLanguage, text: "English / हिंदी / ಕನ್ನಡ" }
-                            ].map((item, index) => (
-                                <Card key={index} className="p-3 mb-3 glass border-0 shadow-sm">
-                                    <div className="d-flex align-items-center">
-                                        <item.icon className="me-3 text-info fs-5" />
-                                        {item.text}
-                                    </div>
-                                </Card>
-                            ))}
+                                        <motion.div variants={itemVariants} className="mb-4">
+                                            <Form.Group controlId="formMessage">
+                                                <Form.Label className="fw-medium">Message</Form.Label>
+                                                <Form.Control
+                                                    as="textarea"
+                                                    rows={4}
+                                                    placeholder="Your message..."
+                                                    className="glass-input border-0"
+                                                    style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}
+                                                    required
+                                                />
+                                            </Form.Group>
+                                        </motion.div>
+
+                                        <motion.div variants={itemVariants} className="text-center">
+                                            <Button
+                                                variant={formStatus === 'success' ? "success" : "primary"}
+                                                type="submit"
+                                                className="px-5 py-2 rounded-pill fw-bold position-relative overflow-hidden"
+                                                disabled={formStatus === 'submitting' || formStatus === 'success'}
+                                                as={motion.button}
+                                                whileHover={{ scale: 1.05 }}
+                                                whileTap={{ scale: 0.95 }}
+                                            >
+                                                <AnimatePresence mode='wait'>
+                                                    {formStatus === 'success' ? (
+                                                        <motion.div
+                                                            key="success"
+                                                            initial={{ y: 20, opacity: 0 }}
+                                                            animate={{ y: 0, opacity: 1 }}
+                                                            exit={{ y: -20, opacity: 0 }}
+                                                            className="d-flex align-items-center justify-content-center"
+                                                        >
+                                                            <FaCheck className="me-2" /> Sent!
+                                                        </motion.div>
+                                                    ) : (
+                                                        <motion.div
+                                                            key="idle"
+                                                            initial={{ y: 20, opacity: 0 }}
+                                                            animate={{ y: 0, opacity: 1 }}
+                                                            exit={{ y: -20, opacity: 0 }}
+                                                        >
+                                                            {formStatus === 'submitting' ? 'Sending...' : 'Send Message'}
+                                                        </motion.div>
+                                                    )}
+                                                </AnimatePresence>
+                                            </Button>
+                                        </motion.div>
+                                    </Form>
+                                </Card.Body>
+                            </Card>
                         </motion.div>
-                    </Col>
 
-                    {/* Right Send Message */}
-                    <Col md={6} className="mb-4">
                         <motion.div
-                            initial={{ opacity: 0, x: 50 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.5 }}
+                            className="mt-5 text-center"
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            transition={{ delay: 0.5, duration: 0.5 }}
                             viewport={{ once: true }}
                         >
-                            <h4 className="mb-4">Send Message</h4>
-
-                            <Form ref={formRef} onSubmit={sendEmail}>
-                                <Row>
-                                    <Col md={6} className="mb-3">
-                                        <Form.Control
-                                            name="from_name"
-                                            type="text"
-                                            placeholder="Your Name"
-                                            required
-                                            className="glass border-0"
-                                            style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
-                                        />
-                                    </Col>
-                                    <Col md={6} className="mb-3">
-                                        <Form.Control
-                                            name="reply_to"
-                                            type="email"
-                                            placeholder="Your Email"
-                                            required
-                                            className="glass border-0"
-                                            style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
-                                        />
-                                    </Col>
-                                </Row>
-
-                                <div className="mb-3">
-                                    <Form.Control
-                                        name="subject"
-                                        type="text"
-                                        placeholder="Your Message Subject"
-                                        required
-                                        className="glass border-0"
-                                        style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
-                                    />
-                                </div>
-
-                                <div className="mb-3">
-                                    <Form.Control
-                                        as="textarea"
-                                        rows={5}
-                                        name="message"
-                                        placeholder="Your Message"
-                                        required
-                                        className="glass border-0"
-                                        style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
-                                    />
-                                </div>
-
-                                <motion.button
-                                    type="submit"
-                                    className={`btn w-100 fw-bold ${isSent ? 'btn-success' : 'btn-light'}`}
-                                    style={{ borderRadius: "10px" }}
-                                    whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.98 }}
-                                    animate={isSent ? { scale: [1, 1.1, 1] } : {}}
-                                >
-                                    {isSent ? "Message Sent!" : "Send Message"}
-                                </motion.button>
-                            </Form>
+                            <h5 className="mb-4 fw-bold">Connect with me</h5>
+                            <div className="d-flex justify-content-center flex-wrap gap-3 gap-sm-4 px-2">
+                                {socialLinks.map((social, index) => (
+                                    <motion.a
+                                        key={index}
+                                        href={social.href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-decoration-none"
+                                        style={{ color: 'inherit' }}
+                                        whileHover={{
+                                            scale: 1.2,
+                                            color: social.color,
+                                            rotate: 5
+                                        }}
+                                        whileTap={{ scale: 0.9 }}
+                                        initial={{ opacity: 0, scale: 0 }}
+                                        whileInView={{ opacity: 1, scale: 1 }}
+                                        transition={{
+                                            type: "spring",
+                                            stiffness: 260,
+                                            damping: 20,
+                                            delay: 0.6 + (index * 0.1)
+                                        }}
+                                        viewport={{ once: true }}
+                                    >
+                                        <social.icon size={30} />
+                                    </motion.a>
+                                ))}
+                            </div>
                         </motion.div>
                     </Col>
                 </Row>
-
-                {/* Social Icons */}
-                <div className="text-center mt-4">
-                    <motion.h5
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        viewport={{ once: true }}
-                    >
-                        Connect With Me
-                    </motion.h5>
-                    <div className="mt-3">
-                        {[
-                            { icon: FaLinkedin, link: "https://www.linkedin.com/in/omkar-gudade-80b71a2b3" },
-                            { icon: FaGithub, link: "https://github.com/Omkargudade" },
-                            { icon: FaTwitter, link: "https://twitter.com/" },
-                            { icon: FaFacebook, link: "https://facebook.com/" }
-                        ].map((social, index) => (
-                            <motion.a
-                                key={index}
-                                href={social.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="d-inline-block mx-3 fs-3"
-                                whileHover={{ scale: 1.2, color: "#38bdf8", rotate: 5 }}
-                                whileTap={{ scale: 0.9 }}
-                            >
-                                <social.icon />
-                            </motion.a>
-                        ))}
-                    </div>
-                </div>
-
             </Container>
         </section>
     );
